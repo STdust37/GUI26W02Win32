@@ -6,6 +6,8 @@
 
 #include "model.h"
 
+#include <cmath>
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -20,6 +22,27 @@ ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
+
+static void DrawStar(HDC hdc, POINT center)
+{
+    constexpr int vertexCount = 10;
+    constexpr double pi = 3.14159265358979323846;
+    constexpr double outerRadius = 30.0;
+    constexpr double innerRadius = 12.0;
+
+    POINT vertices[vertexCount];
+
+    for (int i = 0; i < vertexCount; i++)
+    {
+        double radius = (i % 2 == 0) ? outerRadius : innerRadius;
+        double angle = -pi / 2.0 + i * pi / 5.0;
+
+        vertices[i].x = center.x + static_cast<LONG>(std::cos(angle) * radius);
+        vertices[i].y = center.y + static_cast<LONG>(std::sin(angle) * radius);
+    }
+
+    Polygon(hdc, vertices, vertexCount);
+}
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     _In_opt_ HINSTANCE hPrevInstance,
@@ -174,7 +197,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         int n = GetNumPoints();
         for (int i = 0; i < n; i++) {
             POINT p = GetPoint(i);
-            Ellipse(hdc, p.x - 30, p.y - 30, p.x + 30, p.y + 30);
+            DrawStar(hdc, p);
         }
 
         SelectObject(hdc, oldPen);
