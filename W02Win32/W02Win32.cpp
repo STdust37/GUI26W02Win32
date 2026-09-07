@@ -180,6 +180,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         InvalidateRect(hWnd, NULL, TRUE);
     }
     break;
+    case WM_RBUTTONDOWN:
+        DeleteLastPoint();
+        InvalidateRect(hWnd, NULL, TRUE);
+        break;
     case WM_PAINT:
     {
         PAINTSTRUCT ps;
